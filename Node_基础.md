@@ -105,6 +105,7 @@ fs.writeFile('message.txt', 'Hello Node.js', 'utf8', callback);
 
 2.5 读写流
 
+- 读取流
 ```JavaScript
 var rs=fs.createReadStream('./data.txt');
 var temp="";
@@ -119,3 +120,46 @@ rs.on('end',function(){
   console.log(temp);
 })
 ```
+
+- 写入流
+```JavaScript
+var rs=fs.createReadStream('./data.txt');
+var ws=fs.createWriteStream('./data_bak.txt');
+
+rs.on('data',function(chunk){
+  ws.write(chunk);
+})
+```
+> pipe方法写入数据时,会等当前读出的数据全部写入后,才进行下一次的读取操作,内存利用充分,当时读取时间比较长
+
+```JavaScript
+var rs=fs.createReadStream('./data.txt');
+var ws=fs.createWriteStream('./data_bak.txt');
+rs.pipe(ws)
+```
+
+### http第三方模块express
+
+- 使用步骤：
+ 1.安装
+ 2.使用http模块创建Web服务器，运行express，让其承担请求监听器的任务
+```JavaScript
+	var app = express();
+	http.createServer( app ).listen(80);
+```
+3.为app对象添加特定URL的请求处理
+```JavaScript
+app.get('/user', function(req, res){     
+		//接收请求消息中的数据
+		req.query   //获取查询字符串中的数据{ }
+		req.params  //获取请求参数(手册自学)
+		req.on('data', function(buf){})  //获取请求主体中的数据
+		//发送响应消息
+		res.send(HTML文本);
+		res.sendFile(任意类型的文件);
+		res.json(对象/数组数据);
+	})
+
+```
+- 中间件
+

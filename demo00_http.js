@@ -39,7 +39,7 @@ fs.writeFile('data.txt', 'Hello Node.js', (err) => {
   if (err) throw err;
   console.log('The file has been saved!');
 });
-*/
+
 var rs=fs.createReadStream('./data.txt');
 var temp="";
 rs.on('data',function(chunk){ //每读取64kb执行data方法
@@ -52,3 +52,12 @@ rs.on('data',function(chunk){ //每读取64kb执行data方法
 rs.on('end',function(){
   console.log(temp);
 })
+*/
+
+var rs=fs.createReadStream('./data.txt');
+var ws=fs.createWriteStream('./data_bak.txt');
+
+// rs.on('data',function(chunk){
+//   ws.write(chunk);
+// })
+rs.pipe(ws)
