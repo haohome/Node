@@ -138,7 +138,7 @@ var ws=fs.createWriteStream('./data_bak.txt');
 rs.pipe(ws)
 ```
 
-### http第三方模块express
+### 3.http第三方模块express
 
 - 使用步骤：
  1.安装
@@ -161,5 +161,150 @@ app.get('/user', function(req, res){
 	})
 
 ```
-- 中间件
+- 3.1 路由
+路由，针对客户端的某个请求方法所请求的特定URL，如何给出响应消息的过程，称为“路由”
+路由 = 请求方法 + 请求URL + 处理函数
+一个典型的路由形如：
+```JavaScript
+app.get('/user', function(req, res){     
+		//接收请求消息中的数据
+		req.query   //获取查询字符串中的数据{ }
+		req.params  //获取请求参数(手册自学)
+		req.on('data', function(buf){})  //获取请求主体中的数据
+
+		//发送响应消息
+		res.send(HTML文本);
+		res.sendFile(任意类型的文件);
+		res.json(对象/数组数据);
+	})
+```
+**express.Router**
+ > 在 app 目录下创建名为 birds.js 的文件，内容如下：
+ ```JavaScript
+ var express = require('express');
+var router = express.Router();
+
+// 该路由使用的中间件
+router.use(function timeLog(req, res, next) {
+  console.log('Time: ', Date.now());
+  next();
+});
+// 定义网站主页的路由
+router.get('/', function(req, res) {
+  res.send('Birds home page');
+});
+// 定义 about 页面的路由
+router.get('/about', function(req, res) {
+  res.send('About birds');
+});
+module.exports = router;
+```
+然后在应用中加载路由模块：
+```JavaScript
+var birds = require('./birds');
+...
+app.use('/birds', birds);
+```
+应用即可处理发自 /birds 和 /birds/about 的请求，并且调用为该路由指定的 timeLog 中间件。
+
+
+
+- 3.2 中间件
+中间件（Middleware） 是一个函数，它可以访问请求对象（request object (req)）, 响应对象（response object (res)）, 和 web 应用中处于请求-响应循环流程中的中间件，一般被命名为 next 的变量。
+功能:
+	(1)执行任何代码。
+	(2)修改请求和响应对象。
+	(3)终结请求-响应循环。
+	(4)调用堆栈中的下一个中间件。
+  ![中间件](http://ojis8rp6f.bkt.clouddn.com/18-1-18/39090586.jpg)
+
+> 如果当前中间件没有终结请求-响应循环，则必须调用 next() 方法将控制权交给下一个中间件，否则请求就会挂起。
+
+- 应用级中间件
+应用级中间件绑定到app对象使用app.use()和app.METHOD(),其中，METHOD是需要处理的HTTP请求的方法，例如GET,PUT,POST等等全部小写。
+```JavaScript
+var app = express();
+// 没有挂载路径的中间件，应用的每个请求都会执行该中间件
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now());
+  next();
+});
+// 挂载至 /user/:id 的中间件，任何指向 /user/:id 的请求都会执行它
+app.use('/user/:id', function (req, res, next) {
+  console.log('Request Type:', req.method);
+  next();
+});
+// 路由和句柄函数(中间件系统)，处理指向 /user/:id 的 GET 请求
+app.get('/user/:id', function (req, res, next) {
+  res.send('USER');
+});
+```
+3.2.1 在一个挂载点装载一组中间件
+```JavaScript
+// 一个中间件栈，对任何指向 /user/:id 的 HTTP 请求打印出相关信息
+app.use('/user/:id', function(req, res, next) {
+  console.log('Request URL:', req.originalUrl);
+  next();
+}, function (req, res, next) {
+  console.log('Request Type:', req.method);
+  next();
+});
+```
+3.2.2 下例为指向 /user/:id 的 GET 请求定义了两个路由,但第一个路由终止了请求-响应循环,第二个路由不会被执行
+```JavaScript
+// 一个中间件栈，处理指向 /user/:id 的 GET 请求
+app.get('/user/:id', function (req, res, next) {
+  console.log('ID:', req.params.id);
+  next();
+}, function (req, res, next) {
+  res.send('User Info');
+});
+// 处理 /user/:id， 打印出用户 id
+app.get('/user/:id', function (req, res, next) {
+  res.end(req.params.id);
+});
+```
+
+3.2.3 如果需要在中间件栈中跳过剩余中间件，调用next('route')方法将控制权交给下一个路由
+> 注意：next('route')只对使用app.VERB()或router.VERB()加载的中间件有效。
+```JavaScript
+  // 一个中间件栈，处理指向 /user/:id 的 GET 请求
+  app.get('/user/:id', function (req, res, next) {
+    // 如果 user id 为 0, 跳到下一个路由
+    if (req.params.id == 0) next('route');
+    // 否则将控制权交给栈中下一个中间件
+    else next(); //
+  }, function (req, res, next) {
+    // 渲染常规页面
+    res.render('regular');
+  });
+
+  // 处理 /user/:id， 渲染一个特殊页面
+  app.get('/user/:id', function (req, res, next) {
+    res.render('special');
+  });
+```
+
+ - 路由级中间件 使用方法与应用级中间件类似
+ > var router = express.Router();
+ - 错误处理中间件
+ 错误处理中间件有4个参数，定义错误处理中间件时必须使用这4个参数。即使不需要next对象，也必须在签名中声明它，否则中间件会被识别为一个常规中间件，不能处理错误。
+```JavaScript
+  app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  });
+```
+
+ - 项目中常用的中间件
+  (1)向客户端返回指定目录下的所有静态资源文件
+	app.use(express.static('./public'));
+  (2)将客户端POST请求主体中的数据封装到req.body中
+	npm  i  body-parser
+	const bodyParser = require('body-parser');
+	app.use( bodyParser.urlencoded({extended: false}));
+  (3)将请求头部中的Cookie数据封装到req.cookies中
+	npm   i   cookie-parser
+	const cookieParser = require('cookie-parser');
+	app.use(cookieParser());   
 
