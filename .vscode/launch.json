@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "启动",
-      "program": "${file}"
+      "name": "Launch Program",
+      "program": "${workspaceFolder}\\Demo-lesson\\lesson2\\app.js"
     }
   ]
 }
