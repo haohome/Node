@@ -2,7 +2,7 @@
  * @Author: Daniel Hfood 
  * @Date: 2018-04-22 22:31:26 
  * @Last Modified by: Daniel
- * @Last Modified time: 2018-04-22 23:43:43
+ * @Last Modified time: 2018-04-23 22:32:44
  */
 /**
  * fs.readFile()以异步方式读取
