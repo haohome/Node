@@ -5,7 +5,8 @@ function route(handle,url,resp){
     resp.writeHead(200, {'Content-Type':'text/html;charset=UTF-8'});
     handle[url](resp);
   }else{
-    console.log('没有该页面');
+    resp.writeHead(404, {'Content-Type':'text/html;charset=UTF-8'});
+    fs.createReadStream(__dirname+'/404.html','utf8').pipe(resp);
   }
 }
 
