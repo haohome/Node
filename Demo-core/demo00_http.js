@@ -11,7 +11,9 @@ let server=http.createServer(function(req,res){
   }
   res.end('欢迎来到NodeJs');
 })
-server.listen(3000);//监听3000端口
+server.listen(3000);
+console.log('开始监听3000端口')
+//监听3000端口
 /*
 fs.stat('data.txt', (err, stats) => {
   if (err) {
@@ -43,18 +45,18 @@ fs.writeFile('data.txt', 'Hello Node.js', (err) => {
 });
 */
 
-var rs=fs.createReadStream('./data.txt');
-var temp="";
-rs.on('data',function(chunk){ //每读取64kb执行data方法
-  console.log(chunk);
-  //看字符串
-  // console.log(chunk.toString());
-  temp+=chunk;//拼接所有的数据
-})
-//读取流完毕后执行end
-rs.on('end',function(){
-  console.log(temp);
-})
+// var rs=fs.createReadStream('./data.txt');
+// var temp="";
+// rs.on('data',function(chunk){ //每读取64kb执行data方法
+//   console.log(chunk);
+//   //看字符串
+//   // console.log(chunk.toString());
+//   temp+=chunk;//拼接所有的数据
+// })
+// //读取流完毕后执行end
+// rs.on('end',function(){
+//   console.log(temp);
+// })
 
 // var rs=fs.createReadStream('./data.txt');
 // var ws=fs.createWriteStream('./data_bak.txt');

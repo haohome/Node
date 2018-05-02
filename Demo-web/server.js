@@ -2,8 +2,6 @@ const http=require('http');
 
 function startServer(route,handle){
   var onRequest=function(req,resp){
-    console.log('req',req.url);
-    
     route(handle,req.url,resp);
   }
   var server= http.createServer(onRequest)
