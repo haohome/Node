@@ -9,6 +9,7 @@ handle['/index'] = handler.index;
 handle['/products'] = handler.products;
 handle['/detail'] = handler.detail;
 handle['/favicon.ico'] = handler.favicon;
+handle['/api'] = handler.api;
 
 //2.启动服务器
 server.startServer(router.route,handle)

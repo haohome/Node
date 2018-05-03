@@ -8,5 +8,20 @@
 </head>
 <body>
   <h1>这是首页</h1>
+  <form action="/api" method="get">
+    <label for="userName">姓名</label>
+    <input id="userName" type="text" name='uname' placeholder='请输入姓名'><br/>
+    <label for="passwd">密码</label>
+    <input type="password" id="passwd" name='passwd' placeholder='请输入密码'><br/>
+    <input type="submit" value="提交">
+  </form>
+  <hr/>
+  <form action="/api" method="post">
+    <label for="userName2">姓名</label>
+    <input id="userName2" type="text" name='uname' placeholder='请输入姓名'><br/>
+    <label for="passwd2">密码</label>
+    <input type="password" id="passwd2" name='passwd' placeholder='请输入密码'><br/>
+    <input type="submit" value="提交">
+  </form>
 </body>
 </html>
