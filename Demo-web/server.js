@@ -5,13 +5,8 @@ function startServer(route,handle){
   var onRequest=function(req,resp){
     //url路径
     var pathName=url.parse(req.url).pathname;
-    //请求为GET时,解析路由query
-    if(req.method=='GET'){
-      var params=url.parse(req.url,true).query;
-      route(handle,pathName,resp,params);
-    }
     //请求为POST时,监听数据流
-    else if(req.method=="POST"){
+    if(req.method=="POST"){
       var data="";
       req.on('error',function(err){
         console.log(err);
@@ -21,6 +16,11 @@ function startServer(route,handle){
       var params=queryString.parse(data);
       route(handle,pathName,resp,params);
       })
+    }
+    //请求为GET时,解析路由query
+    else{
+      var params=url.parse(req.url,true).query;
+      route(handle,pathName,resp,params);
     }
   }
   var server= http.createServer(onRequest)
