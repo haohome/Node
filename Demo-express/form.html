@@ -8,8 +8,12 @@
 </head>
 <body>
   <form action="/upload" method="post" enctype='multipart/form-data'>
-    <h2>单文件上传</h2>
-    <input type="file" name='logo'><br>
+    <label for="uName">用户名</label>
+    <input type="text" name='uName' id='uName'><br>
+    <label for="pwd">密码</label>
+    <input type="password" name='pwd' id='pwd'><br>
+    <label for="file">文件上传</label>
+    <input type="file" name='logo' id='file'><br>
     <input type="submit" value='提交'>
   </form>
 </body>
