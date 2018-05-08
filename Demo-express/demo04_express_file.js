@@ -28,7 +28,7 @@ var createFolder=function(folder) {
 //文件上传路径
 var uploadFolder='./upload/';
 createFolder(uploadFolder);
-// 文件磁盘存储
+// 文件配置磁盘存储
 var storage=multer.diskStorage({
   destination:function(req,file,cb) {
     cb(null, uploadFolder);
